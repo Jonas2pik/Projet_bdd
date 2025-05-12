@@ -1,25 +1,31 @@
 <?php
 require_once("functions-DB.php");
 
-// Récupère les articles avec jeu + jaquette + note moyenne
 function getArticles($mysqli, $offset, $limit) {
     $sql = "SELECT 
                 a.id_article,
                 a.titre AS titre_article,
                 j.nom AS nom_jeu,
-                j.jaquette,
-                a.date_creation,
+                i.chemin_image AS image,
+                er.date_modif AS date_article,
                 a.note_redacteur,
-                ROUND(AVG(av.note), 1) AS note_moyenne
+                (
+                    SELECT ROUND(AVG(av.note), 1)
+                    FROM avis av
+                    WHERE av.id_jeu = j.id_jeu
+                ) AS note_moyenne
             FROM article a
-            INNER JOIN jeu j ON a.id_jeu = j.id_jeu
-            LEFT JOIN avis av ON av.id_article = a.id_article
-            GROUP BY a.id_article
-            ORDER BY a.date_creation DESC
+            JOIN jeu j ON a.id_jeu = j.id_jeu
+            JOIN est_image ei ON ei.id_article = a.id_article
+            JOIN image i ON i.id_image = ei.id_image
+            JOIN est_redacteur er ON er.id_article = a.id_article
+            WHERE i.est_jaquette = 1
+            ORDER BY er.date_modif DESC
             LIMIT $limit OFFSET $offset";
 
     return readDB($mysqli, $sql);
 }
+
 
 // Compte le total d'articles pour pagination
 function countAllArticles($mysqli) {
