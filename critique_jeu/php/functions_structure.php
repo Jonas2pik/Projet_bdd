@@ -1,5 +1,6 @@
 <?php
 
+// Affiche la liste des articles avec image, titre, jeu, notes
 function displayArticles($articles) {
     if (empty($articles)) {
         echo "<p>Aucun article disponible pour le moment.</p>";
@@ -7,20 +8,20 @@ function displayArticles($articles) {
     }
 
     echo '<div class="articles-list">';
-    
+
     foreach ($articles as $article) {
         $id = $article['id_article'];
         $titre = $article['titre_article'];
         $nom_jeu = $article['nom_jeu'];
-        $jaquette = $article['jaquette'];
+        $image = $article['image'];
         $note_redacteur = $article['note_redacteur'];
         $note_moyenne = isset($article['note_moyenne']) ? $article['note_moyenne'] : 'N/A';
-        $date = date("d/m/Y", strtotime($article['date_creation']));
-
+        $date = date("d/m/Y", strtotime($article['date_article']));
+        echo "<p><strong>Date :</strong> $date</p>";
         echo "
         <div class='article-card'>
             <a href='article.php?id=$id'>
-                <img src='$jaquette' alt='Jaquette de $nom_jeu' class='jaquette'>
+                <img src='$image' alt='Jaquette de $nom_jeu' class='jaquette'>
                 <div class='article-info'>
                     <h2>$titre</h2>
                     <p><strong>Jeu :</strong> $nom_jeu</p>
@@ -35,3 +36,4 @@ function displayArticles($articles) {
 
     echo '</div>';
 }
+?>
